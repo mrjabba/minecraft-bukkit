@@ -53,8 +53,6 @@ This task compiles the plugin and copies the JAR to your Spigot server's plugins
 ```
 src/main/java/com/minecraftplay/
 ├── MyPlugin.java        # Main plugin class with command handling
-├── SignGame.java        # Sign interaction game mechanics
-└── Clue.java           # Game clue system
 ```
 
 ## Dependencies
