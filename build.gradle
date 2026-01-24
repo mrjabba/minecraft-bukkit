@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.kevin'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+}
+
+dependencies {
+    compileOnly 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.kevin.MyPlugin'
+    }
+}
+
+task deployPlugin(type: Copy) {
+    dependsOn build
+    from("$buildDir/libs")
+    include("*.jar")
+    into("/Users/kevinhutson/dev/minecraft-spigot/SpigotServer/server/plugins")
+}

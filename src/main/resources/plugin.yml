@@ -1,0 +1,72 @@
+name: MyPlugin
+version: 1.0
+main: com.kevin.MyPlugin
+api-version: 1.20
+commands:
+  additem:
+    description: Adds an item to the player's inventory
+    usage: /additem <itemName> [amount]
+  move:
+    description: Moves the player forward
+  buildmenu:
+    description: Opens the build menu
+  buildtower:
+    description: Builds a vertical tower
+    usage: /buildtower <height> <blockType>
+  buildtowersand:
+    description: Builds a vertical tower (sand)
+    usage: /buildtowersand <height>
+  generatetree:
+    description: Generates a tree
+    usage: /generatetree
+  generatecherrytree:
+    description: Generates a cherry tree
+    usage: /generatecherrytree
+  fillarea:
+    description: Fills a flat area with the specified block type
+    usage: /fillarea <radius> <blockType>
+  fillareablock:
+    description: Fills a flat area with the specified block type and height
+    usage: /fillarea <radius> <height> <blockType>
+  cleararea:
+    description: Removes dirt blocks in a square area
+    usage: /cleararea
+  spawnmob:
+    description: Spawns mobs near the player
+    usage: /spawnmob <mobType> [amount]
+  explodezone:
+    description: Sets up TNT with redstone fuse and lever
+    usage: /explodezone <size>
+  buildhouse:
+    description: Builds a wooden house at your location.
+    usage: /buildhouse <length> <width>
+  buildhouse2:
+    description: Builds a wooden house at your location. Slanted roof style.
+    usage: /buildhouse <length> <width>
+  setlevel:
+    description: Set a player's level
+    usage: /setlevel <level>
+  setwarp:
+    description: Set a warp point at your current location
+    usage: /setwarp <name>
+  warp:
+    description: Teleport to a warp point
+    usage: /warp <name>
+  listwarps:
+    description: List warp point
+    usage: /listwarps
+  placerail:
+    description: Places a line of rails in front of the player
+    usage: /placerail <length>    
+  placeitem:
+    description: Places a line of items in front of the player
+    usage: /placeitem <length>        
+  signgame:
+    description: Sign game - places 5 signs with letters a-e
+    usage: /signgame
+  placeflowers:
+    description: Places flowers around the player
+    usage: /placeflowers <name> <radius>
+  zzz:
+    description: Panic command, easy to type. Warp back home.
+    usage: /zzz
