@@ -156,12 +156,6 @@ public class MyPlugin extends JavaPlugin implements Listener {
                     return true;
                 }
                 return handlePlaceFlowers((Player) sender, args);
-            case "signgame":
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players may run this command.");
-                    return true;
-                }
-                return SignGame.handlePlaceSigns((Player) sender, args);
             default:
                 return false;
         }

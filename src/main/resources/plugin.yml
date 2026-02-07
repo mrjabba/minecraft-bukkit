@@ -61,9 +61,6 @@ commands:
   placeitem:
     description: Places a line of items in front of the player
     usage: /placeitem <length>        
-  signgame:
-    description: Sign game - places 5 signs with letters a-e
-    usage: /signgame
   placeflowers:
     description: Places flowers around the player
     usage: /placeflowers <name> <radius>
