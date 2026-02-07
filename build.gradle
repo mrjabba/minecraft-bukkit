@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'com.kevin'
+group = 'com.minecraftplay'
 version = '1.0'
 
 repositories {
@@ -16,7 +16,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'com.kevin.MyPlugin'
+        attributes 'Main-Class': 'com.minecraftplay.MyPlugin'
     }
 }
 
