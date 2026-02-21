@@ -1093,12 +1093,13 @@ public class MyPlugin extends JavaPlugin implements Listener {
 
     private boolean handleBuildZiggurat(Player player, String[] args) {
         if (args.length < 2) {
-            player.sendMessage("Usage: /buildziggurat <length> <material>");
+            player.sendMessage("Usage: /buildziggurat <length> <material> [stairs]");
             return false;
         }
 
         int length;
         Material material = Material.STONE;
+        boolean buildStairs = false;
 
         // Parse length
         try {
@@ -1121,14 +1122,20 @@ public class MyPlugin extends JavaPlugin implements Listener {
             player.sendMessage("Invalid material '" + args[1] + "'. Using STONE.");
         }
 
+        // Parse optional stairs parameter
+        if (args.length >= 3) {
+            String stairsArg = args[2].toLowerCase();
+            buildStairs = stairsArg.equals("stairs") || stairsArg.equals("true") || stairsArg.equals("yes");
+        }
+
         Location baseLocation = player.getLocation().getBlock().getLocation();
-        int height = buildZiggurat(player.getWorld(), baseLocation, length, material);
+        int height = buildZiggurat(player.getWorld(), baseLocation, length, material, buildStairs);
         
-        player.sendMessage("Ziggurat built! Length: " + length + "x" + length + ", Height: " + height + " levels, Material: " + material.name());
+        player.sendMessage("Ziggurat built! Length: " + length + "x" + length + ", Height: " + height + " levels, Material: " + material.name() + (buildStairs ? " with stairs" : ""));
         return true;
     }
 
-    private int buildZiggurat(World world, Location baseLocation, int length, Material material) {
+    private int buildZiggurat(World world, Location baseLocation, int length, Material material, boolean buildStairs) {
         int startX = baseLocation.getBlockX();
         int startY = baseLocation.getBlockY();
         int startZ = baseLocation.getBlockZ();
@@ -1155,7 +1162,63 @@ public class MyPlugin extends JavaPlugin implements Listener {
             currentSize -= 2;  // Shrink by 1 on each side (2 total)
         }
 
+        // Add stairs on the north and south sides if requested
+        if (buildStairs) {
+            addZigguratStairway(world, startX, startY, startZ, length, material);
+        }
+
         return level;  // Return the number of levels built
+    }
+
+    private void addZigguratStairway(World world, int startX, int startY, int startZ, int length, Material material) {
+        int level = 0;
+        int currentSize = length;
+
+        // Get stairs material matching the pyramid material
+        Material stairsMaterial = getStairsMaterial(material);
+
+        // Build stairways on the north and south sides of the pyramid
+        // Each stair is placed on the front/back edge of each level
+        while (currentSize >= 1) {
+            int y = startY + level;
+            int offset = (length - currentSize) / 2;
+            
+            // Middle x position of current level
+            int stairX = startX + offset + currentSize / 2;
+            
+            // North side stair (front edge)
+            int northStairZ = startZ + offset;
+            placeStair(world, stairX, y, northStairZ, stairsMaterial, BlockFace.SOUTH);
+            
+            // South side stair (back edge)
+            int southStairZ = startZ + offset + currentSize - 1;
+            placeStair(world, stairX, y, southStairZ, stairsMaterial, BlockFace.NORTH);
+
+            level++;
+            currentSize -= 2;
+        }
+    }
+
+    private Material getStairsMaterial(Material material) {
+        try {
+            String stairsName = material.name() + "_STAIRS";
+            Material stairsMat = Material.valueOf(stairsName);
+            if (stairsMat.isBlock()) {
+                return stairsMat;
+            }
+        } catch (IllegalArgumentException e) {
+            // Material stairs variant not found
+        }
+        return Material.OAK_STAIRS; // Fallback to oak stairs
+    }
+
+    private void placeStair(World world, int x, int y, int z, Material material, BlockFace facing) {
+        Block stairBlock = world.getBlockAt(x, y, z);
+        stairBlock.setType(material);
+        org.bukkit.block.data.type.Stairs stairData = (org.bukkit.block.data.type.Stairs) Bukkit.createBlockData(material);
+        stairData.setFacing(facing);
+        stairData.setHalf(org.bukkit.block.data.type.Stairs.Half.BOTTOM);
+        stairBlock.setBlockData(stairData);
     }
 
     private boolean handlePlaceRail(Player player, String[] args) {

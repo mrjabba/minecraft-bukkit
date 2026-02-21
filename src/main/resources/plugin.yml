@@ -15,7 +15,7 @@ commands:
     usage: /buildtower <height> <blockType>
   buildziggurat:
     description: Builds a ziggurat
-    usage: /buildziggurat <length> <blockType>
+    usage: /buildziggurat <length> <blockType> <stairs true/false>
   buildtowersand:
     description: Builds a vertical tower (sand)
     usage: /buildtowersand <height>
