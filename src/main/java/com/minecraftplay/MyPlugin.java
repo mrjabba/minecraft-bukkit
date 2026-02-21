@@ -99,6 +99,12 @@ public class MyPlugin extends JavaPlugin implements Listener {
                     return true;
                 }
                 return handleBuildHouse2((Player) sender, args);
+            case "buildziggurat":
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage("Only players may run this command.");
+                    return true;
+                }
+                return handleBuildZiggurat((Player) sender, args);
             case "setlevel":
                  if (!(sender instanceof Player)) {
                     sender.sendMessage("Only players can set levels.");
@@ -1083,6 +1089,73 @@ public class MyPlugin extends JavaPlugin implements Listener {
     
         player.sendMessage("Built a house with a slanted roof!");
         return true;
+    }
+
+    private boolean handleBuildZiggurat(Player player, String[] args) {
+        if (args.length < 2) {
+            player.sendMessage("Usage: /buildziggurat <length> <material>");
+            return false;
+        }
+
+        int length;
+        Material material = Material.STONE;
+
+        // Parse length
+        try {
+            length = Integer.parseInt(args[0]);
+        } catch (NumberFormatException e) {
+            player.sendMessage("Invalid length. Using default: 10");
+            length = 10;
+        }
+
+        if (length < 1) {
+            player.sendMessage("Length must be at least 1.");
+            return false;
+        }
+
+        // Parse material
+        Material parsedMaterial = Material.matchMaterial(args[1].toUpperCase());
+        if (parsedMaterial != null && parsedMaterial.isBlock()) {
+            material = parsedMaterial;
+        } else {
+            player.sendMessage("Invalid material '" + args[1] + "'. Using STONE.");
+        }
+
+        Location baseLocation = player.getLocation().getBlock().getLocation();
+        int height = buildZiggurat(player.getWorld(), baseLocation, length, material);
+        
+        player.sendMessage("Ziggurat built! Length: " + length + "x" + length + ", Height: " + height + " levels, Material: " + material.name());
+        return true;
+    }
+
+    private int buildZiggurat(World world, Location baseLocation, int length, Material material) {
+        int startX = baseLocation.getBlockX();
+        int startY = baseLocation.getBlockY();
+        int startZ = baseLocation.getBlockZ();
+
+        int level = 0;
+        int currentSize = length;
+
+        // Build each level from bottom to top
+        // Each level shrinks by 2 (1 on each side) until reaching 1x1 at the top
+        while (currentSize >= 1) {
+            int y = startY + level;
+            
+            // Center the shrinking pyramid
+            int offset = (length - currentSize) / 2;
+
+            // Place blocks for this level
+            for (int x = 0; x < currentSize; x++) {
+                for (int z = 0; z < currentSize; z++) {
+                    world.getBlockAt(startX + offset + x, y, startZ + offset + z).setType(material);
+                }
+            }
+            
+            level++;
+            currentSize -= 2;  // Shrink by 1 on each side (2 total)
+        }
+
+        return level;  // Return the number of levels built
     }
 
     private boolean handlePlaceRail(Player player, String[] args) {
