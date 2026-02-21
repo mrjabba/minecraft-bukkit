@@ -790,6 +790,9 @@ public class MyPlugin extends JavaPlugin implements Listener {
             return true;
         }
 
+        this.handleFillAreaBlock(player, new String[] {String.valueOf(length), String.valueOf(width), "air"});
+        
+
         // Resolve wall material string to a Material enum using Bukkit's matching helper.
         Material wallMat;
         if (wallMaterialArg == null || wallMaterialArg.isBlank()) {
