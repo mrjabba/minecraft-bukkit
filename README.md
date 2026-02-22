@@ -70,3 +70,19 @@ src/main/java/com/minecraftplay/
 ## License
 
 See [LICENSE](LICENSE) file for details.
+
+## Screenshots
+
+Some sample visuals of various commands
+
+### House - from buildhouse
+
+![buildhouse](./screenshots/house1.png)
+
+### Big House - from `fillareablock`
+
+![fillareablock](./screenshots/fillareablock.png)
+
+### Ziggurat - from `buildziggurat`
+
+![buildziggurat](./screenshots/ziggurat.png)
