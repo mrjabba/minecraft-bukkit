@@ -14,6 +14,10 @@ import com.minecraftplay.command.SpawnMobCommand;
 import com.minecraftplay.command.PlaceFlowersCommand;
 import com.minecraftplay.command.GenerateCherryTreeCommand;
 import com.minecraftplay.command.PlaceRailCommand;
+import com.minecraftplay.command.PlaceItemCommand;
+import com.minecraftplay.command.ZzzCommand;
+import com.minecraftplay.command.MoveCommand;
+import com.minecraftplay.command.BuildMenuCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -64,11 +68,13 @@ public class MyPlugin extends JavaPlugin implements Listener {
         commands.put("placeflowers", new PlaceFlowersCommand()::execute);
         commands.put("generatecherrytree", new GenerateCherryTreeCommand()::execute);
         commands.put("placerail", new PlaceRailCommand()::execute);
+        commands.put("placeitem", new PlaceItemCommand()::execute);
+        commands.put("zzz", new ZzzCommand(warps)::execute);
+        commands.put("move", new MoveCommand(getLogger())::execute);
+        commands.put("buildmenu", new BuildMenuCommand()::execute);
         
         commands.put("fillareablock", this::handleFillAreaBlock);
         commands.put("explodezone", this::handleExplodeZone);
-        commands.put("zzz", this::handlePanic);
-        commands.put("placeitem", this::handlePlaceItem);
         
         commands.put("buildhouse", (player, args) -> {
             String wallMatArg = args.length >= 3 ? args[2] : null;
@@ -76,9 +82,6 @@ public class MyPlugin extends JavaPlugin implements Listener {
         });
         commands.put("buildhouse2", this::handleBuildHouse2);
         commands.put("buildziggurat", this::handleBuildZiggurat);
-        
-        commands.put("move", (player, args) -> handleMove(player));
-        commands.put("buildmenu", (player, args) -> handleBuildMenu(player));
     }
 
     @Override
