@@ -1,5 +1,5 @@
 name: MyPlugin
-version: 1.0
+version: 1.1
 main: com.minecraftplay.MyPlugin
 api-version: 1.20
 commands:
@@ -46,6 +46,9 @@ commands:
   buildhouse2:
     description: Builds a wooden house at your location. Slanted roof style.
     usage: /buildhouse <length> <width>
+  buildbridge:
+    description: Builds a bridge for spanning gaps in land
+    usage: /buildbridge <length> <width> <blockType>
   setlevel:
     description: Set a player's level
     usage: /setlevel <level>
