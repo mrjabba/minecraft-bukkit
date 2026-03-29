@@ -6,6 +6,14 @@ import com.minecraftplay.command.SetLevelCommand;
 import com.minecraftplay.command.WarpCommand;
 import com.minecraftplay.command.SetWarpCommand;
 import com.minecraftplay.command.BuildTowerCommand;
+import com.minecraftplay.command.BuildTowerSandCommand;
+import com.minecraftplay.command.FillAreaCommand;
+import com.minecraftplay.command.ClearAreaCommand;
+import com.minecraftplay.command.GenerateTreeCommand;
+import com.minecraftplay.command.SpawnMobCommand;
+import com.minecraftplay.command.PlaceFlowersCommand;
+import com.minecraftplay.command.GenerateCherryTreeCommand;
+import com.minecraftplay.command.PlaceRailCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -48,18 +56,19 @@ public class MyPlugin extends JavaPlugin implements Listener {
         commands.put("warp", new WarpCommand(warps)::execute);
         commands.put("setwarp", new SetWarpCommand(warps, v -> saveWarps())::execute);
         commands.put("buildtower", new BuildTowerCommand()::execute);
+        commands.put("buildtowersand", new BuildTowerSandCommand()::execute);
+        commands.put("fillarea", new FillAreaCommand()::execute);
+        commands.put("cleararea", new ClearAreaCommand()::execute);
+        commands.put("generatetree", new GenerateTreeCommand()::execute);
+        commands.put("spawnmob", new SpawnMobCommand()::execute);
+        commands.put("placeflowers", new PlaceFlowersCommand()::execute);
+        commands.put("generatecherrytree", new GenerateCherryTreeCommand()::execute);
+        commands.put("placerail", new PlaceRailCommand()::execute);
         
-        commands.put("buildtowersand", this::handleBuildTowerSand);
-        commands.put("generatetree", this::handleGenerateTree);
-        commands.put("fillarea", this::handleFillArea);
         commands.put("fillareablock", this::handleFillAreaBlock);
-        commands.put("cleararea", this::handleClearArea);
-        commands.put("spawnmob", this::handleSpawnMob);
         commands.put("explodezone", this::handleExplodeZone);
         commands.put("zzz", this::handlePanic);
-        commands.put("placerail", this::handlePlaceRail);
         commands.put("placeitem", this::handlePlaceItem);
-        commands.put("placeflowers", this::handlePlaceFlowers);
         
         commands.put("buildhouse", (player, args) -> {
             String wallMatArg = args.length >= 3 ? args[2] : null;
@@ -70,7 +79,6 @@ public class MyPlugin extends JavaPlugin implements Listener {
         
         commands.put("move", (player, args) -> handleMove(player));
         commands.put("buildmenu", (player, args) -> handleBuildMenu(player));
-        commands.put("generatecherrytree", (player, args) -> handleGenerateCherryTree(player));
     }
 
     @Override
