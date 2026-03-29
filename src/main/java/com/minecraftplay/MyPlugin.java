@@ -28,12 +28,50 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class MyPlugin extends JavaPlugin implements Listener {
     private Map<String, Location> warps = new HashMap<>();
+    
+    @FunctionalInterface
+    interface PlayerCommandHandler {
+        boolean handle(Player player, String[] args);
+    }
+    
+    private final Map<String, PlayerCommandHandler> commands = new HashMap<>();
+    
+    private void registerCommands() {
+        commands.put("additem", this::handleAddItem);
+        commands.put("buildtower", this::handleBuildTower);
+        commands.put("buildtowersand", this::handleBuildTowerSand);
+        commands.put("generatetree", this::handleGenerateTree);
+        commands.put("fillarea", this::handleFillArea);
+        commands.put("fillareablock", this::handleFillAreaBlock);
+        commands.put("cleararea", this::handleClearArea);
+        commands.put("spawnmob", this::handleSpawnMob);
+        commands.put("explodezone", this::handleExplodeZone);
+        commands.put("setlevel", this::handleSetLevel);
+        commands.put("setwarp", this::handleSetWarp);
+        commands.put("warp", this::handleWarp);
+        commands.put("zzz", this::handlePanic);
+        commands.put("placerail", this::handlePlaceRail);
+        commands.put("placeitem", this::handlePlaceItem);
+        commands.put("placeflowers", this::handlePlaceFlowers);
+        
+        commands.put("buildhouse", (player, args) -> {
+            String wallMatArg = args.length >= 3 ? args[2] : null;
+            return handleBuildHouse(player, args, wallMatArg);
+        });
+        commands.put("buildhouse2", this::handleBuildHouse2);
+        commands.put("buildziggurat", this::handleBuildZiggurat);
+        
+        commands.put("move", (player, args) -> handleMove(player));
+        commands.put("buildmenu", (player, args) -> handleBuildMenu(player));
+        commands.put("generatecherrytree", (player, args) -> handleGenerateCherryTree(player));
+    }
 
     @Override
     public void onEnable() {
         getLogger().info("Kevin plugin enable. 1.2");
         getServer().getPluginManager().registerEvents(this, this);
         loadWarps();
+        registerCommands();
     }
 
     @Override
@@ -44,131 +82,39 @@ public class MyPlugin extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         String name = cmd.getName().toLowerCase();
-
-        switch (name) {
-            case "additem":
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players may run this command.");
-                    return true;
-                }
-                return handleAddItem((Player) sender, args);
-            case "move":
-                if (!(sender instanceof Player)) { sender.sendMessage("Only players can run this command."); return true; }
-                return handleMove((Player) sender);
-            case "buildmenu":
-                if (!(sender instanceof Player)) { sender.sendMessage("Only players can run this command."); return true; }
-                return handleBuildMenu((Player) sender);
-            case "buildtower":
-                if (!(sender instanceof Player)) { sender.sendMessage("Only players can run this command."); return true; }
-                return handleBuildTower((Player) sender, args);
-            case "buildtowersand":
-                if (!(sender instanceof Player)) { sender.sendMessage("Only players can run this command."); return true; }
-                return handleBuildTowerSand((Player) sender, args);
-            case "generatetree":
-                if (!(sender instanceof Player)) { sender.sendMessage("Only players can run this command."); return true; }
-                return handleGenerateTree((Player) sender, args);
-            case "generatecherrytree":
-                if (!(sender instanceof Player)) { sender.sendMessage("Only players can run this command."); return true; }
-                return handleGenerateCherryTree((Player) sender);
-            case "fillarea":
-                if (!(sender instanceof Player)) { sender.sendMessage("Only players can run this command."); return true; }
-                return handleFillArea((Player) sender, args);
-            case "fillareablock":
-                if (!(sender instanceof Player)) { sender.sendMessage("Only players can run this command."); return true; }
-                return handleFillAreaBlock((Player) sender, args);
-            case "cleararea":
-                if (!(sender instanceof Player)) { sender.sendMessage("Only players can run this command."); return true; }
-                return handleClearArea((Player) sender, args);
-            case "spawnmob":
-                if (!(sender instanceof Player)) { sender.sendMessage("Only players can run this command."); return true; }
-                return handleSpawnMob((Player) sender, args);
-            case "explodezone":
-                if (!(sender instanceof Player)) { sender.sendMessage("Only players can run this command."); return true; }
-                return handleExplodeZone((Player) sender, args);
-            case "buildhouse":
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players may run this command.");
-                    return true;
-                }
-                // pass optional 3rd arg as material name (e.g. ACACIA_PLANKS)
-                String wallMatArg = args.length >= 3 ? args[2] : null;
-                return handleBuildHouse((Player) sender, args, wallMatArg);
-            case "buildhouse2":
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players may run this command.");
-                    return true;
-                }
-                return handleBuildHouse2((Player) sender, args);
-            case "buildziggurat":
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players may run this command.");
-                    return true;
-                }
-                return handleBuildZiggurat((Player) sender, args);
-            case "setlevel":
-                 if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players can set levels.");
-                    return true;
-                }
-                return handleSetLevel((Player) sender, args);
-            case "setwarp":
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players can set warps.");
-                    return true;
-                }
-                return handleSetWarp((Player) sender, args);
-            case "zzz":
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players can warp.");
-                    return true;
-                }
-                return handlePanic((Player) sender, args);
-            case "warp":
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players can warp.");
-                    return true;
-                }
-                return handleWarp((Player) sender, args);
-            case "listwarps":
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players can list warps.");
-                    return true;
-                }
-                Player p = (Player) sender;
-                if (warps.isEmpty()) {
-                    p.sendMessage("No warps have been set.");
-                } else {
-                    p.sendMessage("Warps:");
-                    for (String warpName : warps.keySet()) {
-                        p.sendMessage("- " + warpName);
-                    }
-                }
+        
+        if (name.equals("listwarps")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("Only players can list warps.");
                 return true;
-            case "placerail":
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players may run this command.");
-                    return true;
+            }
+            Player p = (Player) sender;
+            if (warps.isEmpty()) {
+                p.sendMessage("No warps have been set.");
+            } else {
+                p.sendMessage("Warps:");
+                for (String warpName : warps.keySet()) {
+                    p.sendMessage("- " + warpName);
                 }
-                return handlePlaceRail((Player) sender, args);
-            case "placeitem":
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players may run this command.");
-                    return true;
-                }
-                return handlePlaceItem((Player) sender, args);
-            case "placeflowers":
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players may run this command.");
-                    return true;
-                }
-                return handlePlaceFlowers((Player) sender, args);
-            default:
-                return false;
+            }
+            return true;
         }
+        
+        PlayerCommandHandler handler = commands.get(name);
+        if (handler == null) {
+            return false;
+        }
+        
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("Only players may run this command.");
+            return true;
+        }
+        
+        return handler.handle((Player) sender, args);
     }
 
 
-    private boolean handlePlaceFlowers(Player player, String[] args) {
+    boolean handlePlaceFlowers(Player player, String[] args) {
     if (args.length < 2) {
         player.sendMessage("Usage: /placeflowers <flowerType> <radius>");
         return true;
@@ -217,7 +163,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
     return true;
 }
     
-    private boolean handleAddItem(Player player, String[] args) {
+    boolean handleAddItem(Player player, String[] args) {
         if (args.length < 1) {
             player.sendMessage("Usage: /addItem <itemName> [amount]");
             return true;
@@ -242,7 +188,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handleSetLevel(Player player, String[] args) {
+    boolean handleSetLevel(Player player, String[] args) {
         if (args.length < 1) {
             player.sendMessage("Usage: /setlevel <level>");
             return true;
@@ -263,7 +209,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handlePanic(Player player, String[] args) {
+    boolean handlePanic(Player player, String[] args) {
         // used when I want to try something but don't want to die and lose stuff
         // String name ="oceanhome";
         String name = "bandithome1";
@@ -277,7 +223,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handleWarp(Player player, String[] args) {
+    boolean handleWarp(Player player, String[] args) {
         if (args.length < 1) {
             player.sendMessage("Usage: /warp <name>");
             return true;
@@ -293,7 +239,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handleSetWarp(Player player, String[] args) {
+    boolean handleSetWarp(Player player, String[] args) {
         if (args.length < 1) {
             player.sendMessage("Usage: /setwarp <name>");
             return true;
@@ -325,7 +271,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         }
     }
 
-    private boolean handleMove(Player player) {
+    boolean handleMove(Player player) {
         Location base = player.getLocation();
         World world = player.getWorld();
         getLogger().info("starting...placing blocks");
@@ -337,7 +283,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handleBuildMenu(Player player) {
+    boolean handleBuildMenu(Player player) {
         Inventory menu = Bukkit.createInventory(null, 9, "Build Menu");
 
         ItemStack dirt = new ItemStack(Material.DIRT);
@@ -350,7 +296,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handleBuildTower(Player player, String[] args) {
+    boolean handleBuildTower(Player player, String[] args) {
         if (args.length == 0) {
             player.sendMessage("Usage: /buildtowersand <height> <material>");
             return false;
@@ -385,7 +331,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
     }
 
     // TODO useful for building visible markers in the ocean
-    private boolean handleBuildTowerSand(Player player, String[] args) {
+    boolean handleBuildTowerSand(Player player, String[] args) {
         int height = 10;
         if (args.length == 0) {
             player.sendMessage("Usage: /buildtowersand <height>");
@@ -414,7 +360,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handleGenerateTree(Player player, String[] args) {
+    boolean handleGenerateTree(Player player, String[] args) {
         if (args.length == 0) {
             player.sendMessage("Usage: /generatetree <treeType>");
             return false;
@@ -445,7 +391,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handleGenerateCherryTree(Player player) {
+    boolean handleGenerateCherryTree(Player player) {
         World world = player.getWorld();
         // pick a spot two blocks ahead of the player's feet and align to block grid
         Location loc = player.getLocation().add(player.getLocation().getDirection().setY(0).normalize().multiply(2));
@@ -461,7 +407,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handleFillArea(Player player, String[] args) {
+    boolean handleFillArea(Player player, String[] args) {
         Location center = player.getLocation();
         World world = player.getWorld();
 
@@ -498,7 +444,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
     }
 
     // Like handleFillArea, but fills a block with specified radius and height
-    private boolean handleFillAreaBlock(Player player, String[] args) {
+    boolean handleFillAreaBlock(Player player, String[] args) {
         Location playerLoc = player.getLocation();
         World world = player.getWorld();
 
@@ -553,7 +499,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handleClearArea(Player player, String[] args) {
+    boolean handleClearArea(Player player, String[] args) {
         Location center = player.getLocation();
         World world = player.getWorld();
 
@@ -586,7 +532,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handleSpawnMob(Player player, String[] args) {
+    boolean handleSpawnMob(Player player, String[] args) {
         World world = player.getWorld();
         Location center = player.getLocation();
 
@@ -629,7 +575,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handleExplodeZone(Player player, String[] args) {
+    boolean handleExplodeZone(Player player, String[] args) {
         Location center = player.getLocation();
         World world = player.getWorld();
 
@@ -680,7 +626,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handleBuildHouse(Player player, String[] args) {
+    boolean handleBuildHouse(Player player, String[] args) {
         World world = player.getWorld();
         Location base = player.getLocation().getBlock().getLocation(); // align to block grid
 
@@ -776,7 +722,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handleBuildHouse(Player player, String[] args, String wallMaterialArg) {
+    boolean handleBuildHouse(Player player, String[] args, String wallMaterialArg) {
         if (args.length < 2) {
             player.sendMessage("Usage: /buildhouse <length> <width> [wallMaterial]");
             return true;
@@ -1016,7 +962,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         }
     }
 
-    private boolean handleBuildHouse2(Player player, String[] args) {
+    boolean handleBuildHouse2(Player player, String[] args) {
         if (args.length < 2) {
             player.sendMessage("Usage: /buildhouse2 <length> <width>");
             return true;
@@ -1091,7 +1037,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handleBuildZiggurat(Player player, String[] args) {
+    boolean handleBuildZiggurat(Player player, String[] args) {
         if (args.length < 2) {
             player.sendMessage("Usage: /buildziggurat <length> <material> [stairs]");
             return false;
@@ -1221,7 +1167,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         stairBlock.setBlockData(stairData);
     }
 
-    private boolean handlePlaceRail(Player player, String[] args) {
+    boolean handlePlaceRail(Player player, String[] args) {
         if (args.length < 1) {
             player.sendMessage("Usage: /placerail <length> [railType]");
             return true;
@@ -1269,7 +1215,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean handlePlaceItem(Player player, String[] args) {
+    boolean handlePlaceItem(Player player, String[] args) {
         if (args.length < 1) {
             player.sendMessage("Usage: /placeitem <length> [itemType]");
             return true;
