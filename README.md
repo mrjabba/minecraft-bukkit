@@ -10,6 +10,7 @@ A feature-rich Bukkit/Spigot plugin for Minecraft 1.20 that provides building ut
 - **`/buildtower`** - Builds vertical towers with specified height and block type
 - **`/buildtowersand`** - Specialized tower building with sand blocks. Useful for dropping in the ocean for visual markers
 - **`/buildziggurat`** - Builds a ziggurat structure with optional stairs
+- **`/buildbridge`** - Builds a bridge across water with walls and lanterns
 - **`/generatetree`** - Generates natural-looking trees
 - **`/generatecherrytree`** - Generates cherry tree variants
 - **`/fillarea`** - Fills flat areas with specified block type
@@ -86,3 +87,7 @@ Some sample visuals of various commands
 ### Ziggurat - from `buildziggurat`
 
 ![buildziggurat](./screenshots/ziggurat.png)
+
+### Bridge - from `buildbridge`
+
+![buildziggurat](./screenshots/bridge1.png)

@@ -23,6 +23,7 @@ import com.minecraftplay.command.ExplodeZoneCommand;
 import com.minecraftplay.command.BuildHouseCommand;
 import com.minecraftplay.command.BuildHouse2Command;
 import com.minecraftplay.command.BuildZigguratCommand;
+import com.minecraftplay.command.BuildBridgeCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -71,6 +72,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         commands.put("buildhouse", new BuildHouseCommand()::execute);
         commands.put("buildhouse2", new BuildHouse2Command()::execute);
         commands.put("buildziggurat", new BuildZigguratCommand()::execute);
+        commands.put("buildbridge", new BuildBridgeCommand()::execute);
     }
 
     @Override
