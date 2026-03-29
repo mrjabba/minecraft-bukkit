@@ -1,5 +1,11 @@
 package com.minecraftplay;
 
+import com.minecraftplay.command.PlayerCommand;
+import com.minecraftplay.command.AddItemCommand;
+import com.minecraftplay.command.SetLevelCommand;
+import com.minecraftplay.command.WarpCommand;
+import com.minecraftplay.command.SetWarpCommand;
+import com.minecraftplay.command.BuildTowerCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -37,8 +43,12 @@ public class MyPlugin extends JavaPlugin implements Listener {
     private final Map<String, PlayerCommandHandler> commands = new HashMap<>();
     
     private void registerCommands() {
-        commands.put("additem", this::handleAddItem);
-        commands.put("buildtower", this::handleBuildTower);
+        commands.put("additem", new AddItemCommand()::execute);
+        commands.put("setlevel", new SetLevelCommand()::execute);
+        commands.put("warp", new WarpCommand(warps)::execute);
+        commands.put("setwarp", new SetWarpCommand(warps, v -> saveWarps())::execute);
+        commands.put("buildtower", new BuildTowerCommand()::execute);
+        
         commands.put("buildtowersand", this::handleBuildTowerSand);
         commands.put("generatetree", this::handleGenerateTree);
         commands.put("fillarea", this::handleFillArea);
@@ -46,9 +56,6 @@ public class MyPlugin extends JavaPlugin implements Listener {
         commands.put("cleararea", this::handleClearArea);
         commands.put("spawnmob", this::handleSpawnMob);
         commands.put("explodezone", this::handleExplodeZone);
-        commands.put("setlevel", this::handleSetLevel);
-        commands.put("setwarp", this::handleSetWarp);
-        commands.put("warp", this::handleWarp);
         commands.put("zzz", this::handlePanic);
         commands.put("placerail", this::handlePlaceRail);
         commands.put("placeitem", this::handlePlaceItem);
