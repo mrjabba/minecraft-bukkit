@@ -26,8 +26,8 @@ public class FillAreaCommand implements PlayerCommand {
         String matName = args[1].toUpperCase();
         Material blockType = Material.matchMaterial(matName);
         if (blockType == null || !blockType.isBlock()) {
-            player.sendMessage("Invalid material '" + args[1] + "'. Using DIRT.");
-            blockType = Material.DIRT;
+            player.sendMessage("Invalid material '" + args[1]);
+            return false;
         }
 
         int yLevel = center.getBlockY();

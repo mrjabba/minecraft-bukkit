@@ -52,7 +52,7 @@ class FillAreaCommandTest {
 
         boolean result = command.execute(player, args);
 
-        assertTrue(result);
+        assertFalse(result);
     }
 
     @Test
