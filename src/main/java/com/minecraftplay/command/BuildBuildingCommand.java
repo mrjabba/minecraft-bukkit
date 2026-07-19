@@ -23,7 +23,8 @@ public class BuildBuildingCommand implements PlayerCommand {
             Location interiorCenter = movePlayerToCenterOfBlock(player, params.radius());
             
             // 3. Decoration Phase 
-            placeItemAtCornersOfBlock(interiorCenter, params.radius(), Material.LANTERN);
+            // Updated to pass height for the ceiling lanterns
+            placeItemAtCornersOfBlock(interiorCenter, params.radius(), params.height(), Material.LANTERN);
             placeInteriorFurniture(interiorCenter, params.radius());
             placeOppositeDoors(interiorCenter, params.radius());
             placeSideWallWindows(interiorCenter, params.radius());
@@ -94,8 +95,9 @@ public class BuildBuildingCommand implements PlayerCommand {
         return interiorCenter;
    }
 
-   private void placeItemAtCornersOfBlock(Location interiorCenter, int radius, Material material) {
+    private void placeItemAtCornersOfBlock(Location interiorCenter, int radius, int height, Material material) {
         int innerRadius = radius - 1;
+        int ceilingY = height - 2; 
 
         int[][] cornerOffsets = {
             {innerRadius, innerRadius},   
@@ -105,21 +107,42 @@ public class BuildBuildingCommand implements PlayerCommand {
         };
 
         for (int[] offset : cornerOffsets) {
-            Location lanternLoc = interiorCenter.clone().add(offset[0], 0, offset[1]);
-            Block targetBlock = lanternLoc.getBlock();
-            
-            if (targetBlock.getType() == Material.AIR) {
-                targetBlock.setType(material);
-            } else {
-                int safeX = offset[0] > 0 ? offset[0] - 1 : offset[0] + 1;
-                int safeZ = offset[1] > 0 ? offset[1] - 1 : offset[1] + 1;
-                
-                Location safeLoc = interiorCenter.clone().add(safeX, 0, safeZ);
-                if (safeLoc.getBlock().getType() == Material.AIR) {
-                    safeLoc.getBlock().setType(material);
-                }
-            }
+            // 1. Ground Lanterns (Sitting on the floor)
+            Location groundLoc = interiorCenter.clone().add(offset[0], 0, offset[1]);
+            setLanternBlock(groundLoc, material, false, interiorCenter, offset, 0);
+
+            // 2. Ceiling Lanterns (Hanging down from the ceiling)
+            Location ceilingLoc = interiorCenter.clone().add(offset[0], ceilingY, offset[1]);
+            setLanternBlock(ceilingLoc, material, true, interiorCenter, offset, ceilingY);
         }    
+    }
+
+   private void setLanternBlock(Location loc, Material material, boolean hanging, Location interiorCenter, int[] offset, int yOffset) {
+        Block block = loc.getBlock();
+        
+        if (block.getType() == Material.AIR) {
+            block.setType(material, false);
+            applyLanternData(block, hanging);
+        } else {
+            // Safety fallback offset adjustment if the corner is obstructed
+            int safeX = offset[0] > 0 ? offset[0] - 1 : offset[0] + 1;
+            int safeZ = offset[1] > 0 ? offset[1] - 1 : offset[1] + 1;
+            
+            Location safeLoc = interiorCenter.clone().add(safeX, yOffset, safeZ);
+            Block safeBlock = safeLoc.getBlock();
+            if (safeBlock.getType() == Material.AIR) {
+                safeBlock.setType(material, false);
+                applyLanternData(safeBlock, hanging);
+            }
+        }
+   }
+
+   private void applyLanternData(Block block, boolean hanging) {
+        if (block.getBlockData() instanceof org.bukkit.block.data.type.Lantern) {
+            org.bukkit.block.data.type.Lantern lanternData = (org.bukkit.block.data.type.Lantern) block.getBlockData();
+            lanternData.setHanging(hanging);
+            block.setBlockData(lanternData, false);
+        }
    }
 
    private void placeInteriorFurniture(Location interiorCenter, int radius) {
