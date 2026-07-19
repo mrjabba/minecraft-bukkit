@@ -3,6 +3,7 @@ package com.minecraftplay.command;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -22,7 +23,12 @@ public class BuildBuildingCommand implements PlayerCommand {
         emptyBlockWithAir(player, args, radius, height);
         Location interiorCenter = movePlayerToCenterOfBlock(player, radius);
         placeItemAtCornersOfBlock(interiorCenter, radius, Material.LANTERN);
+        
+        // Decorate the building with the base kit
+        placeInteriorFurniture(interiorCenter, radius);
 
+        placeOppositeDoors(interiorCenter, radius);
+        
         return true;
     }
     
@@ -124,5 +130,121 @@ public class BuildBuildingCommand implements PlayerCommand {
                 }
             }
         }    
+   }
+
+    private void placeInteriorFurniture(Location interiorCenter, int radius) {
+        int innerRadius = radius - 1;
+
+        // DEFENSIVE SCAN: Dynamically find the exact interior face of the East (+X) and West (-X) walls.
+        // We start at the theoretical boundary and step inward until we hit actual AIR.
+        int safeEastX = innerRadius;
+        while (safeEastX > 0 && interiorCenter.clone().add(safeEastX, 0, 0).getBlock().getType() != Material.AIR) {
+            safeEastX--;
+        }
+
+        int safeWestX = -innerRadius;
+        while (safeWestX < 0 && interiorCenter.clone().add(safeWestX, 0, 0).getBlock().getType() != Material.AIR) {
+            safeWestX++;
+        }
+
+        // 1. Utility Line (Flush against the East Wall)
+        // Since they sit on the East wall (+X), they should face WEST to look into the room
+        placeDirectionalComponent(interiorCenter.clone().add(safeEastX, 0, 0), Material.CRAFTING_TABLE, BlockFace.WEST);
+        placeDirectionalComponent(interiorCenter.clone().add(safeEastX, 0, 1), Material.CHEST, BlockFace.WEST);
+        placeDirectionalComponent(interiorCenter.clone().add(safeEastX, 0, 2), Material.CHEST, BlockFace.WEST);
+        placeDirectionalComponent(interiorCenter.clone().add(safeEastX, 0, -1), Material.FURNACE, BlockFace.WEST);
+        placeDirectionalComponent(interiorCenter.clone().add(safeEastX, 0, -2), Material.FURNACE, BlockFace.WEST);
+
+        // 2. Bed Assembly Line (Flush against the West Wall)
+        Location bedFootLoc = interiorCenter.clone().add(safeWestX, 0, 0);
+        Location bedHeadLoc = interiorCenter.clone().add(safeWestX, 0, 1);
+
+        Block footBlock = bedFootLoc.getBlock();
+        Block headBlock = bedHeadLoc.getBlock();
+
+        // DOUBLE-GUARD: Ensure both targets are AIR so a tiny house radius doesn't overwrite a corner lantern
+        if (footBlock.getType() == Material.AIR && headBlock.getType() == Material.AIR) {
+            footBlock.setType(Material.RED_BED, false);
+            headBlock.setType(Material.RED_BED, false);
+
+            if (footBlock.getBlockData() instanceof org.bukkit.block.data.type.Bed) {
+                org.bukkit.block.data.type.Bed footData = (org.bukkit.block.data.type.Bed) footBlock.getBlockData();
+                footData.setPart(org.bukkit.block.data.type.Bed.Part.FOOT);
+                footData.setFacing(BlockFace.SOUTH); // Head block is 1 block South (+Z)
+                footBlock.setBlockData(footData, false);
+
+                org.bukkit.block.data.type.Bed headData = (org.bukkit.block.data.type.Bed) headBlock.getBlockData();
+                headData.setPart(org.bukkit.block.data.type.Bed.Part.HEAD);
+                headData.setFacing(BlockFace.SOUTH);
+                headBlock.setBlockData(headData, false);
+            }
+        }
+   }
+
+    // Helper method to safely handle block placement and structural rotation
+    private void placeDirectionalComponent(Location loc, Material material, BlockFace facing) {
+        Block block = loc.getBlock();
+        
+        // SAFETY CHECK: Never overwrite something that isn't empty space
+        if (block.getType() == Material.AIR) {
+            block.setType(material, false);
+            
+            // Check if the block type supports rotation (like Chests and Furnaces do)
+            if (block.getBlockData() instanceof org.bukkit.block.data.Directional) {
+                org.bukkit.block.data.Directional directional = (org.bukkit.block.data.Directional) block.getBlockData();
+                directional.setFacing(facing);
+                block.setBlockData(directional, false);
+            }
+        }
+    }
+
+    private void placeOppositeDoors(Location interiorCenter, int radius) {
+        int innerRadius = radius - 1;
+
+        // DEFENSIVE SCAN: Find the exact North and South wall coordinates on the Z-axis
+        int safeSouthZ = innerRadius;
+        while (safeSouthZ > 0 && interiorCenter.clone().add(0, 0, safeSouthZ).getBlock().getType() != Material.AIR) {
+            safeSouthZ--;
+        }
+        int southWallZ = safeSouthZ + 1; // The actual solid wall block
+
+        int safeNorthZ = -innerRadius;
+        while (safeNorthZ < 0 && interiorCenter.clone().add(0, 0, safeNorthZ).getBlock().getType() != Material.AIR) {
+            safeNorthZ++;
+        }
+        int northWallZ = safeNorthZ - 1; // The actual solid wall block
+
+        // 1. South Door (Centered at X=0, placed into the South Wall, facing outwards)
+        Location southDoorLoc = interiorCenter.clone().add(0, 0, southWallZ);
+        placeDoor(southDoorLoc, BlockFace.SOUTH);
+
+        // 2. North Door (Centered at X=0, placed into the North Wall, facing outwards)
+        Location northDoorLoc = interiorCenter.clone().add(0, 0, northWallZ);
+        placeDoor(northDoorLoc, BlockFace.NORTH);
+   }
+
+   private void placeDoor(Location lowerLoc, BlockFace facing) {
+        Block bottomBlock = lowerLoc.getBlock();
+        Block topBlock = lowerLoc.clone().add(0, 1, 0).getBlock();
+
+        // Force set the blocks to an Oak Door without physics to prevent them from breaking instantly
+        bottomBlock.setType(Material.OAK_DOOR, false);
+        topBlock.setType(Material.OAK_DOOR, false);
+
+        // Apply BlockData to the bottom half
+        if (bottomBlock.getBlockData() instanceof org.bukkit.block.data.type.Door) {
+            org.bukkit.block.data.type.Door bottomData = (org.bukkit.block.data.type.Door) bottomBlock.getBlockData();
+            bottomData.setHalf(org.bukkit.block.data.Bisected.Half.BOTTOM);
+            bottomData.setFacing(facing);
+            bottomBlock.setBlockData(bottomData, false);
+        }
+
+        // Apply BlockData to the top half
+        if (topBlock.getBlockData() instanceof org.bukkit.block.data.type.Door) {
+            org.bukkit.block.data.type.Door topData = (org.bukkit.block.data.type.Door) topBlock.getBlockData();
+            topData.setHalf(org.bukkit.block.data.Bisected.Half.TOP);
+            topData.setFacing(facing);
+            topBlock.setBlockData(topData, false);
+        }
    }
 }
