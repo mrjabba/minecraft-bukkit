@@ -9,46 +9,39 @@ import org.bukkit.util.Vector;
 
 public class BuildBuildingCommand implements PlayerCommand {
     
-    // Define our strict architectural guardrails
-    private static final int MIN_RADIUS = 8;
-    private static final int MIN_HEIGHT = 6;
-
     @Override
     public boolean execute(Player player, String[] args) {
-        // Quick syntax safety check
-        if (args.length < 2) {
-            player.sendMessage("Usage: /buildbuilding <radius> <height> [material]");
-            return false;
-        }
-
-        int radius, height;
         try {
-            radius = Integer.parseInt(args[0]);
-            height = Integer.parseInt(args[1]);
-        } catch (NumberFormatException e) {
-            player.sendMessage("Invalid radius or height. Please use whole numbers.");
+            // 1. Parse and validate all inputs into our clean Record object
+            BuildingParameters params = BuildingParameters.fromArgs(args);
+
+            // 2. Structural Phase
+            // params.toShellArgs() provides the exact [radius, height, material] array it expects
+            emptyBlockWithAir(player, params.toShellArgs(), params.radius(), params.height());
+            
+            // Relocate player to the center of the structure
+            Location interiorCenter = movePlayerToCenterOfBlock(player, params.radius());
+            
+            // 3. Decoration Phase 
+            placeItemAtCornersOfBlock(interiorCenter, params.radius(), Material.LANTERN);
+            placeInteriorFurniture(interiorCenter, params.radius());
+            placeOppositeDoors(interiorCenter, params.radius());
+            placeSideWallWindows(interiorCenter, params.radius());
+            
+            // 4. Roofing Phase
+            if (params.peakedRoof()) {
+                buildPeakedRoof(interiorCenter, params.radius(), params.height());
+            }
+
+            return true;
+
+        } catch (IllegalArgumentException e) {
+            // Captures missing arguments, bad numbers, or invalid materials safely
+            player.sendMessage(e.getMessage());
             return false;
         }
-
-        // DEFENSIVE GUARDRAIL: Enforce minimum dimensions for large buildings
-        if (radius < MIN_RADIUS || height < MIN_HEIGHT) {
-            player.sendMessage("Structure too small! This command requires a minimum radius of " 
-                + MIN_RADIUS + " and height of " + MIN_HEIGHT + ". Please use BuildHouseCommand instead.");
-            return false;
-        }
-
-        // Structural Phase
-        emptyBlockWithAir(player, args, radius, height);
-        Location interiorCenter = movePlayerToCenterOfBlock(player, radius);
-        
-        // Decoration Phase
-        placeItemAtCornersOfBlock(interiorCenter, radius, Material.LANTERN);
-        placeInteriorFurniture(interiorCenter, radius);
-        placeOppositeDoors(interiorCenter, radius);
-        placeSideWallWindows(interiorCenter, radius);
-        return true;
     }
-    
+
     private void flattenPlayerDirection(Vector direction) {
         direction.setY(0);
         if (direction.lengthSquared() > 0) {
@@ -273,10 +266,68 @@ public class BuildBuildingCommand implements PlayerCommand {
    }
 
    private void placeWindow(Location loc) {
-            Block block = loc.getBlock();
-            // Only replace solid wall framing, don't overwrite air or doors
-            if (block.getType() != Material.AIR && block.getType() != Material.OAK_DOOR) {
-                block.setType(Material.GLASS, true); 
+        Block block = loc.getBlock();
+        // Only replace solid wall framing, don't overwrite air or doors
+        if (block.getType() != Material.AIR && block.getType() != Material.OAK_DOOR) {
+            block.setType(Material.GLASS, true); 
+        }
+   }
+
+   private void buildPeakedRoof(Location interiorCenter, int radius, int height) {
+        // Defensive Scan: Find the material type of the wall block so we can match the gable end colors
+        Material wallMaterial = interiorCenter.clone().add(radius, 0, 0).getBlock().getType();
+        if (wallMaterial == Material.AIR) {
+            wallMaterial = Material.BROWN_TERRACOTTA; // Fallback structural material
+        }
+
+        // Run the roof along the entire depth of the building on the Z axis
+        for (int z = -radius; z <= radius; z++) {
+            
+            // Step inward on the X axis from the outer edges to the center line
+            for (int x = 1; x <= radius; x++) {
+                // As X moves closer to 0, height increases by 1
+                int yOffset = height + (radius - x);
+
+                // East Slope (Stairs face East so they descend toward the East wall)
+                Location eastStair = interiorCenter.clone().add(x, yOffset, z);
+                placeStair(eastStair, Material.OAK_STAIRS, BlockFace.EAST);
+
+                // West Slope (Stairs face West so they descend toward the West wall)
+                Location westStair = interiorCenter.clone().add(-x, yOffset, z);
+                placeStair(westStair, Material.OAK_STAIRS, BlockFace.WEST);
+
+                // GABLE END WALL FILL: If we are on the front or back edge, seal the triangle gap under the stairs
+                if (z == -radius || z == radius) {
+                    for (int fillY = height; fillY < yOffset; fillY++) {
+                        interiorCenter.clone().add(x, fillY, z).getBlock().setType(wallMaterial, false);
+                        interiorCenter.clone().add(-x, fillY, z).getBlock().setType(wallMaterial, false);
+                    }
+                }
             }
-    }   
+
+            // Center Ridge Peak (Caps off the top where the East and West slopes meet at X=0)
+            int peakY = height + radius;
+            Location ridgeLoc = interiorCenter.clone().add(0, peakY, z);
+            ridgeLoc.getBlock().setType(Material.OAK_PLANKS, false);
+
+            // Fill the remaining central gap in the front and back gable walls
+            if (z == -radius || z == radius) {
+                for (int fillY = height; fillY < peakY; fillY++) {
+                    interiorCenter.clone().add(0, fillY, z).getBlock().setType(wallMaterial, false);
+                }
+            }
+        }
+   }
+
+   private void placeStair(Location loc, Material material, BlockFace facing) {
+        Block block = loc.getBlock();
+        block.setType(material, false);
+        
+        // Cast to modern Bukkit Stairs BlockData to update orientation properly
+        if (block.getBlockData() instanceof org.bukkit.block.data.type.Stairs) {
+            org.bukkit.block.data.type.Stairs stairs = (org.bukkit.block.data.type.Stairs) block.getBlockData();
+            stairs.setFacing(facing);
+            block.setBlockData(stairs, false);
+        }
+   }
 }
