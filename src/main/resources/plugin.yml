@@ -10,8 +10,8 @@ commands:
   move:
     description: Moves the player forward
   buildbuilding:
-    description: Re-uses fillareablock by building a block then filling it with air, ready for use as a building.
-    usage: /buildbuilding <radius> <height> <blockType>
+    description: Builds a new building of variable height/width. Re-uses fillareablock by building a block then filling it with air, ready for use as a building.
+    usage: /buildbuilding <radius> <height> <peakedRoof(boolean)> <blockType>
   buildmenu:
     description: Opens the build menu
   buildtower:

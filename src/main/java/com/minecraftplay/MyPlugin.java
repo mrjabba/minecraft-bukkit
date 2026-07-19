@@ -1,6 +1,5 @@
 package com.minecraftplay;
 
-import com.minecraftplay.command.PlayerCommand;
 import com.minecraftplay.command.AddItemCommand;
 import com.minecraftplay.command.BuildBuildingCommand;
 import com.minecraftplay.command.SetLevelCommand;
