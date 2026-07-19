@@ -1,7 +1,7 @@
 package com.minecraftplay;
 
-import com.minecraftplay.command.PlayerCommand;
 import com.minecraftplay.command.AddItemCommand;
+import com.minecraftplay.command.BuildBuildingCommand;
 import com.minecraftplay.command.SetLevelCommand;
 import com.minecraftplay.command.WarpCommand;
 import com.minecraftplay.command.SetWarpCommand;
@@ -73,6 +73,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         commands.put("buildhouse2", new BuildHouse2Command()::execute);
         commands.put("buildziggurat", new BuildZigguratCommand()::execute);
         commands.put("buildbridge", new BuildBridgeCommand()::execute);
+        commands.put("buildbuilding", new BuildBuildingCommand()::execute);
     }
 
     @Override
