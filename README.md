@@ -5,6 +5,7 @@ A feature-rich Bukkit/Spigot plugin for Minecraft 1.20 that provides building ut
 ## Features
 
 ### Building Commands
+- **`/buildbuilding`** - Re-uses fillareablock by building a block then filling it with air, ready for use as a building.
 - **`/buildhouse`** - Constructs houses with customizable dimensions and material
 - **`/buildhouse2`** - Constructs houses with slanted roof style. Work in progress.
 - **`/buildtower`** - Builds vertical towers with specified height and block type
