@@ -59,6 +59,9 @@ commands:
   setlevel:
     description: Set a player's level
     usage: /setlevel <level>
+  settime:
+    description: Set the time of day
+    usage: /settime <time>
   setwarp:
     description: Set a warp point at your current location
     usage: /setwarp <name>

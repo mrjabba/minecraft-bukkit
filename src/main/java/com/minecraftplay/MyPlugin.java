@@ -5,6 +5,7 @@ import com.minecraftplay.command.BuildBuildingCommand;
 import com.minecraftplay.command.BuildBuildingRandomStyleCommand;
 import com.minecraftplay.command.SetLevelCommand;
 import com.minecraftplay.command.WarpCommand;
+import com.minecraftplay.command.SetTimeCommand;
 import com.minecraftplay.command.SetWarpCommand;
 import com.minecraftplay.command.BuildTowerCommand;
 import com.minecraftplay.command.BuildTowerSandCommand;
@@ -53,6 +54,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
     private void registerCommands() {
         commands.put("additem", new AddItemCommand()::execute);
         commands.put("setlevel", new SetLevelCommand()::execute);
+        commands.put("settime", new SetTimeCommand()::execute);
         commands.put("warp", new WarpCommand(warps)::execute);
         commands.put("setwarp", new SetWarpCommand(warps, v -> saveWarps())::execute);
         commands.put("buildtower", new BuildTowerCommand()::execute);
