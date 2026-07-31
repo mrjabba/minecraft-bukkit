@@ -13,6 +13,7 @@ import com.minecraftplay.command.FillAreaCommand;
 import com.minecraftplay.command.ClearAreaCommand;
 import com.minecraftplay.command.GenerateTreeCommand;
 import com.minecraftplay.command.SpawnMobCommand;
+import com.minecraftplay.command.StreetLampCommand;
 import com.minecraftplay.command.PlaceFlowersCommand;
 import com.minecraftplay.command.GenerateCherryTreeCommand;
 import com.minecraftplay.command.PlaceRailCommand;
@@ -76,6 +77,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         commands.put("settime", new SetTimeCommand()::execute);
         commands.put("setwarp", new SetWarpCommand(warps, v -> saveWarps())::execute);
         commands.put("spawnmob", new SpawnMobCommand()::execute);
+        commands.put("streetlamp", new StreetLampCommand()::execute);
         commands.put("warp", new WarpCommand(warps)::execute);
         commands.put("zzz", new ZzzCommand(warps)::execute);
     }

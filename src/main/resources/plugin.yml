@@ -77,6 +77,9 @@ commands:
   spawnmob:
     description: Spawns mobs near the player
     usage: /spawnmob <mobType> [amount]
+  streetlamp:
+    description: Creates a street lamp of optional height and blockType
+    usage: /streetlamp <height> <blockType>
   warp:
     description: Teleport to a warp point
     usage: /warp <name>

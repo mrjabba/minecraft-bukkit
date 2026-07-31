@@ -33,6 +33,7 @@ Command | Usage | Description
 `/placeflowers` | `/placeflowers <name> <radius>` | Scatters specified flowers in a radius around the player.
 `/placeitem` | `/placeitem <length>` | Places a straight line of items directly in front of the player.
 `/placerail` | `/placerail <length>` | Lays down a line of minecart rails in the direction you are facing.
+`/streetlamp` | `/streetlamp <height> <blockType>` | Creates a street lamp of optional height and blockType.
 
 ---
 
