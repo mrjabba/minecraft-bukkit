@@ -2,6 +2,7 @@ package com.minecraftplay;
 
 import com.minecraftplay.command.AddItemCommand;
 import com.minecraftplay.command.BuildBuildingCommand;
+import com.minecraftplay.command.BuildBuildingRandomStyleCommand;
 import com.minecraftplay.command.SetLevelCommand;
 import com.minecraftplay.command.WarpCommand;
 import com.minecraftplay.command.SetWarpCommand;
@@ -74,6 +75,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         commands.put("buildziggurat", new BuildZigguratCommand()::execute);
         commands.put("buildbridge", new BuildBridgeCommand()::execute);
         commands.put("buildbuilding", new BuildBuildingCommand()::execute);
+        commands.put("buildbuildingrandomstyle", new BuildBuildingRandomStyleCommand()::execute);
     }
 
     @Override
@@ -105,6 +107,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
                 p.sendMessage("Warps:");
                 for (String warpName : warps.keySet()) {
                     p.sendMessage("- " + warpName);
+                    System.out.println("- " + warpName);
                 }
             }
             return true;

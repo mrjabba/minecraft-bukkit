@@ -12,6 +12,9 @@ commands:
   buildbuilding:
     description: Builds a new building of variable height/width. Re-uses fillareablock by building a block then filling it with air, ready for use as a building.
     usage: /buildbuilding <radius> <height> <peakedRoof(boolean)> <blockType>
+  buildbuildingrandomstyle:
+    description: Builds a new building of variable height/width/style. Re-uses buildbuilding to randomize the material
+    usage: /buildbuildingrandomstyle <radius> <height> <peakedRoof> [style]
   buildmenu:
     description: Opens the build menu
   buildtower:
