@@ -53,31 +53,31 @@ public class MyPlugin extends JavaPlugin implements Listener {
     
     private void registerCommands() {
         commands.put("additem", new AddItemCommand()::execute);
-        commands.put("setlevel", new SetLevelCommand()::execute);
-        commands.put("settime", new SetTimeCommand()::execute);
-        commands.put("warp", new WarpCommand(warps)::execute);
-        commands.put("setwarp", new SetWarpCommand(warps, v -> saveWarps())::execute);
-        commands.put("buildtower", new BuildTowerCommand()::execute);
-        commands.put("buildtowersand", new BuildTowerSandCommand()::execute);
-        commands.put("fillarea", new FillAreaCommand()::execute);
-        commands.put("cleararea", new ClearAreaCommand()::execute);
-        commands.put("generatetree", new GenerateTreeCommand()::execute);
-        commands.put("spawnmob", new SpawnMobCommand()::execute);
-        commands.put("placeflowers", new PlaceFlowersCommand()::execute);
-        commands.put("generatecherrytree", new GenerateCherryTreeCommand()::execute);
-        commands.put("placerail", new PlaceRailCommand()::execute);
-        commands.put("placeitem", new PlaceItemCommand()::execute);
-        commands.put("zzz", new ZzzCommand(warps)::execute);
-        commands.put("move", new MoveCommand(getLogger())::execute);
-        commands.put("buildmenu", new BuildMenuCommand()::execute);
-        commands.put("fillareablock", new FillAreaBlockCommand()::execute);
-        commands.put("explodezone", new ExplodeZoneCommand()::execute);
-        commands.put("buildhouse", new BuildHouseCommand()::execute);
-        commands.put("buildhouse2", new BuildHouse2Command()::execute);
-        commands.put("buildziggurat", new BuildZigguratCommand()::execute);
         commands.put("buildbridge", new BuildBridgeCommand()::execute);
         commands.put("buildbuilding", new BuildBuildingCommand()::execute);
         commands.put("buildbuildingrandomstyle", new BuildBuildingRandomStyleCommand()::execute);
+        commands.put("buildhouse", new BuildHouseCommand()::execute);
+        commands.put("buildhouse2", new BuildHouse2Command()::execute);
+        commands.put("buildmenu", new BuildMenuCommand()::execute);
+        commands.put("buildtower", new BuildTowerCommand()::execute);
+        commands.put("buildtowersand", new BuildTowerSandCommand()::execute);
+        commands.put("buildziggurat", new BuildZigguratCommand()::execute);
+        commands.put("cleararea", new ClearAreaCommand()::execute);
+        commands.put("explodezone", new ExplodeZoneCommand()::execute);
+        commands.put("fillarea", new FillAreaCommand()::execute);
+        commands.put("fillareablock", new FillAreaBlockCommand()::execute);
+        commands.put("generatecherrytree", new GenerateCherryTreeCommand()::execute);
+        commands.put("generatetree", new GenerateTreeCommand()::execute);
+        commands.put("move", new MoveCommand(getLogger())::execute);
+        commands.put("placeflowers", new PlaceFlowersCommand()::execute);
+        commands.put("placeitem", new PlaceItemCommand()::execute);
+        commands.put("placerail", new PlaceRailCommand()::execute);
+        commands.put("setlevel", new SetLevelCommand()::execute);
+        commands.put("settime", new SetTimeCommand()::execute);
+        commands.put("setwarp", new SetWarpCommand(warps, v -> saveWarps())::execute);
+        commands.put("spawnmob", new SpawnMobCommand()::execute);
+        commands.put("warp", new WarpCommand(warps)::execute);
+        commands.put("zzz", new ZzzCommand(warps)::execute);
     }
 
     @Override
