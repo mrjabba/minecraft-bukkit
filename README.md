@@ -4,36 +4,58 @@ A feature-rich Bukkit/Spigot plugin for Minecraft 1.20 that provides building ut
 
 ## Features
 
-### Building Commands
-- **`/buildbuilding`** - Builds a new building of variable height/width. Re-uses fillareablock by building a block then filling it with air, ready for use as a building.
-- **`/buildhouse`** - Constructs houses with customizable dimensions and material
-- **`/buildhouse2`** - Constructs houses with slanted roof style. Work in progress.
-- **`/buildtower`** - Builds vertical towers with specified height and block type
-- **`/buildtowersand`** - Specialized tower building with sand blocks. Useful for dropping in the ocean for visual markers
-- **`/buildziggurat`** - Builds a ziggurat structure with optional stairs
-- **`/buildbridge`** - Builds a bridge across water with walls and lanterns
-- **`/generatetree`** - Generates natural-looking trees
-- **`/generatecherrytree`** - Generates cherry tree variants
-- **`/fillarea`** - Fills flat areas with specified block type
-- **`/fillareablock`** - Fills a flat area with specified block type and height. Useful for construction as well as clearing when air is used for material.
-- **`/cleararea`** - Clears dirt blocks in a square area
-- **`/placeflowers`** - Places flowers around the player
-- **`/placerail`** - Places a line of rails in front of the player
-- **`/placeitem`** - Places a line of items in front of the player
+## 📋 Command Reference
 
-### Player & World Management
-- **`/additem`** - Adds items to player inventory with custom amounts
-- **`/move`** - Moves the player forward
-- **`/setlevel`** - Set player experience level
-- **`/spawnmob`** - Spawn mobs near the player
-- **`/explodezone`** - Set up TNT with redstone fuse and lever control
+Below is the complete list of commands available in this plugin, organized by functionality.
 
-### Menu & Navigation
-- **`/buildmenu`** - Opens interactive build menu
-- **`/setwarp`** - Create warp points at current location
-- **`/warp`** - Teleport to saved warp points
-- **`/listwarps`** - List all saved warp points
-- **`/zzz`** - Panic command for quick teleport home
+### 🏗️ Building & Architectural Commands
+Command | Usage | Description
+---|---|---
+`/buildbuilding` | `/buildbuilding <radius> <height> <peakedRoof> <blockType>` | Builds a hollow structure with customizable dimensions and roof type.
+`/buildbuildingrandomstyle` | `/buildbuildingrandomstyle <radius> <height> <peakedRoof> [style]` | Constructs a building with randomized block materials and style variations.
+`/buildhouse` | `/buildhouse <length> <width>` | Constructs a standard wooden house at your current location.
+`/buildhouse2` | `/buildhouse <length> <width>` | Constructs a wooden house with a slanted roof design.
+`/buildtower` | `/buildtower <height> <blockType>` | Builds a vertical tower of specified height and material.
+`/buildtowersand` | `/buildtowersand <height>` | Builds a sand tower (useful for dropping into water as ocean markers).
+`/buildziggurat` | `/buildziggurat <length> <blockType> <stairs>` | Builds a stepped ziggurat pyramid with optional stair placement.
+`/buildbridge` | `/buildbridge <length> <width> <blockType>` | Builds a bridge across gaps or bodies of water.
+
+---
+
+### 🌿 Environment & Terraforming Commands
+Command | Usage | Description
+---|---|---
+`/fillarea` | `/fillarea <radius> <blockType>` | Fills a flat square area around the player with a specified block type.
+`/fillareablock` | `/fillarea <radius> <height> <blockType>` | Fills a 3D block volume with height (use `air` for clearing large spaces).
+`/cleararea` | `/cleararea` | Clears all dirt blocks in a square area surrounding the player.
+`/generatetree` | `/generatetree` | Generates a natural tree structure at your location.
+`/generatecherrytree` | `/generatecherrytree` | Generates a cherry tree variant at your location.
+`/placeflowers` | `/placeflowers <name> <radius>` | Scatters specified flowers in a radius around the player.
+`/placeitem` | `/placeitem <length>` | Places a straight line of items directly in front of the player.
+`/placerail` | `/placerail <length>` | Lays down a line of minecart rails in the direction you are facing.
+
+---
+
+### 🛠️ Player & World Management
+Command | Usage | Description
+---|---|---
+`/additem` | `/additem <itemName> [amount]` | Adds a specified item and quantity directly to the player's inventory.
+`/setlevel` | `/setlevel <level>` | Sets the player's experience level.
+`/settime` | `/settime <time>` | Sets the world time of day (e.g., day, night, or tick value).
+`/spawnmob` | `/spawnmob <mobType> [amount]` | Spawns a specified entity type and amount near the player.
+`/explodezone` | `/explodezone <size>` | Places TNT with a redstone fuse and lever for controlled detonations.
+
+---
+
+### 🧭 Navigation & Utilities
+Command | Usage | Description
+---|---|---
+`/buildmenu` | `/buildmenu` | Opens the interactive build menu GUI.
+`/move` | `/move` | Moves the player forward automatically.
+`/setwarp` | `/setwarp <name>` | Sets a named warp point at your current position.
+`/warp` | `/warp <name>` | Teleports you to a previously saved warp location.
+`/listwarps` | `/listwarps` | Displays a list of all saved warp points.
+`/zzz` | `/zzz` | Emergency / panic command to instantly warp back home.
 
 ## Technical Details
 
