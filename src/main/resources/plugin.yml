@@ -7,73 +7,82 @@ commands:
   additem:
     description: Adds an item to the player's inventory
     usage: /additem <itemName> [amount]
-  move:
-    description: Moves the player forward
+  buildbridge:
+    description: Builds a bridge for spanning gaps in land
+    usage: /buildbridge <length> <width> <blockType>
   buildbuilding:
     description: Builds a new building of variable height/width. Re-uses fillareablock by building a block then filling it with air, ready for use as a building.
     usage: /buildbuilding <radius> <height> <peakedRoof(boolean)> <blockType>
-  buildmenu:
-    description: Opens the build menu
-  buildtower:
-    description: Builds a vertical tower
-    usage: /buildtower <height> <blockType>
-  buildziggurat:
-    description: Builds a ziggurat
-    usage: /buildziggurat <length> <blockType> <stairs true/false>
-  buildtowersand:
-    description: Builds a vertical tower (sand)
-    usage: /buildtowersand <height>
-  generatetree:
-    description: Generates a tree
-    usage: /generatetree
-  generatecherrytree:
-    description: Generates a cherry tree
-    usage: /generatecherrytree
-  fillarea:
-    description: Fills a flat area with the specified block type
-    usage: /fillarea <radius> <blockType>
-  fillareablock:
-    description: Fills a flat area with the specified block type and height
-    usage: /fillarea <radius> <height> <blockType>
-  cleararea:
-    description: Removes dirt blocks in a square area
-    usage: /cleararea
-  spawnmob:
-    description: Spawns mobs near the player
-    usage: /spawnmob <mobType> [amount]
-  explodezone:
-    description: Sets up TNT with redstone fuse and lever
-    usage: /explodezone <size>
+  buildbuildingrandomstyle:
+    description: Builds a new building of variable height/width/style. Re-uses buildbuilding to randomize the material
+    usage: /buildbuildingrandomstyle <radius> <height> <peakedRoof> [style]
   buildhouse:
     description: Builds a wooden house at your location.
     usage: /buildhouse <length> <width>
   buildhouse2:
     description: Builds a wooden house at your location. Slanted roof style.
     usage: /buildhouse <length> <width>
-  buildbridge:
-    description: Builds a bridge for spanning gaps in land
-    usage: /buildbridge <length> <width> <blockType>
-  setlevel:
-    description: Set a player's level
-    usage: /setlevel <level>
-  setwarp:
-    description: Set a warp point at your current location
-    usage: /setwarp <name>
-  warp:
-    description: Teleport to a warp point
-    usage: /warp <name>
+  buildmenu:
+    description: Opens the build menu
+  buildtower:
+    description: Builds a vertical tower
+    usage: /buildtower <height> <blockType>
+  buildtowersand:
+    description: Builds a vertical tower (sand)
+    usage: /buildtowersand <height>
+  buildziggurat:
+    description: Builds a ziggurat
+    usage: /buildziggurat <length> <blockType> <stairs true/false>
+  cleararea:
+    description: Removes dirt blocks in a square area
+    usage: /cleararea
+  explodezone:
+    description: Sets up TNT with redstone fuse and lever
+    usage: /explodezone <size>
+  fillarea:
+    description: Fills a flat area with the specified block type
+    usage: /fillarea <radius> <blockType>
+  fillareablock:
+    description: Fills a flat area with the specified block type and height
+    usage: /fillarea <radius> <height> <blockType>
+  generatecherrytree:
+    description: Generates a cherry tree
+    usage: /generatecherrytree
+  generatetree:
+    description: Generates a tree
+    usage: /generatetree
   listwarps:
     description: List warp point
     usage: /listwarps
-  placerail:
-    description: Places a line of rails in front of the player
-    usage: /placerail <length>    
-  placeitem:
-    description: Places a line of items in front of the player
-    usage: /placeitem <length>        
+  move:
+    description: Moves the player forward
   placeflowers:
     description: Places flowers around the player
     usage: /placeflowers <name> <radius>
+  placeitem:
+    description: Places a line of items in front of the player
+    usage: /placeitem <length>
+  placerail:
+    description: Places a line of rails in front of the player
+    usage: /placerail <length>
+  setlevel:
+    description: Set a player's level
+    usage: /setlevel <level>
+  settime:
+    description: Set the time of day
+    usage: /settime <time>
+  setwarp:
+    description: Set a warp point at your current location
+    usage: /setwarp <name>
+  spawnmob:
+    description: Spawns mobs near the player
+    usage: /spawnmob <mobType> [amount]
+  streetlamp:
+    description: Creates a street lamp of optional height and blockType
+    usage: /streetlamp <height> <blockType>
+  warp:
+    description: Teleport to a warp point
+    usage: /warp <name>
   zzz:
     description: Panic command, easy to type. Warp back home.
     usage: /zzz

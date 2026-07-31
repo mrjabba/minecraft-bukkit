@@ -2,8 +2,10 @@ package com.minecraftplay;
 
 import com.minecraftplay.command.AddItemCommand;
 import com.minecraftplay.command.BuildBuildingCommand;
+import com.minecraftplay.command.BuildBuildingRandomStyleCommand;
 import com.minecraftplay.command.SetLevelCommand;
 import com.minecraftplay.command.WarpCommand;
+import com.minecraftplay.command.SetTimeCommand;
 import com.minecraftplay.command.SetWarpCommand;
 import com.minecraftplay.command.BuildTowerCommand;
 import com.minecraftplay.command.BuildTowerSandCommand;
@@ -11,6 +13,7 @@ import com.minecraftplay.command.FillAreaCommand;
 import com.minecraftplay.command.ClearAreaCommand;
 import com.minecraftplay.command.GenerateTreeCommand;
 import com.minecraftplay.command.SpawnMobCommand;
+import com.minecraftplay.command.StreetLampCommand;
 import com.minecraftplay.command.PlaceFlowersCommand;
 import com.minecraftplay.command.GenerateCherryTreeCommand;
 import com.minecraftplay.command.PlaceRailCommand;
@@ -51,29 +54,32 @@ public class MyPlugin extends JavaPlugin implements Listener {
     
     private void registerCommands() {
         commands.put("additem", new AddItemCommand()::execute);
-        commands.put("setlevel", new SetLevelCommand()::execute);
-        commands.put("warp", new WarpCommand(warps)::execute);
-        commands.put("setwarp", new SetWarpCommand(warps, v -> saveWarps())::execute);
-        commands.put("buildtower", new BuildTowerCommand()::execute);
-        commands.put("buildtowersand", new BuildTowerSandCommand()::execute);
-        commands.put("fillarea", new FillAreaCommand()::execute);
-        commands.put("cleararea", new ClearAreaCommand()::execute);
-        commands.put("generatetree", new GenerateTreeCommand()::execute);
-        commands.put("spawnmob", new SpawnMobCommand()::execute);
-        commands.put("placeflowers", new PlaceFlowersCommand()::execute);
-        commands.put("generatecherrytree", new GenerateCherryTreeCommand()::execute);
-        commands.put("placerail", new PlaceRailCommand()::execute);
-        commands.put("placeitem", new PlaceItemCommand()::execute);
-        commands.put("zzz", new ZzzCommand(warps)::execute);
-        commands.put("move", new MoveCommand(getLogger())::execute);
-        commands.put("buildmenu", new BuildMenuCommand()::execute);
-        commands.put("fillareablock", new FillAreaBlockCommand()::execute);
-        commands.put("explodezone", new ExplodeZoneCommand()::execute);
-        commands.put("buildhouse", new BuildHouseCommand()::execute);
-        commands.put("buildhouse2", new BuildHouse2Command()::execute);
-        commands.put("buildziggurat", new BuildZigguratCommand()::execute);
         commands.put("buildbridge", new BuildBridgeCommand()::execute);
         commands.put("buildbuilding", new BuildBuildingCommand()::execute);
+        commands.put("buildbuildingrandomstyle", new BuildBuildingRandomStyleCommand()::execute);
+        commands.put("buildhouse", new BuildHouseCommand()::execute);
+        commands.put("buildhouse2", new BuildHouse2Command()::execute);
+        commands.put("buildmenu", new BuildMenuCommand()::execute);
+        commands.put("buildtower", new BuildTowerCommand()::execute);
+        commands.put("buildtowersand", new BuildTowerSandCommand()::execute);
+        commands.put("buildziggurat", new BuildZigguratCommand()::execute);
+        commands.put("cleararea", new ClearAreaCommand()::execute);
+        commands.put("explodezone", new ExplodeZoneCommand()::execute);
+        commands.put("fillarea", new FillAreaCommand()::execute);
+        commands.put("fillareablock", new FillAreaBlockCommand()::execute);
+        commands.put("generatecherrytree", new GenerateCherryTreeCommand()::execute);
+        commands.put("generatetree", new GenerateTreeCommand()::execute);
+        commands.put("move", new MoveCommand(getLogger())::execute);
+        commands.put("placeflowers", new PlaceFlowersCommand()::execute);
+        commands.put("placeitem", new PlaceItemCommand()::execute);
+        commands.put("placerail", new PlaceRailCommand()::execute);
+        commands.put("setlevel", new SetLevelCommand()::execute);
+        commands.put("settime", new SetTimeCommand()::execute);
+        commands.put("setwarp", new SetWarpCommand(warps, v -> saveWarps())::execute);
+        commands.put("spawnmob", new SpawnMobCommand()::execute);
+        commands.put("streetlamp", new StreetLampCommand()::execute);
+        commands.put("warp", new WarpCommand(warps)::execute);
+        commands.put("zzz", new ZzzCommand(warps)::execute);
     }
 
     @Override
@@ -105,6 +111,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
                 p.sendMessage("Warps:");
                 for (String warpName : warps.keySet()) {
                     p.sendMessage("- " + warpName);
+                    System.out.println("- " + warpName);
                 }
             }
             return true;

@@ -43,32 +43,38 @@ public class BuildBuildingCommand implements PlayerCommand {
         }
     }
 
-    private void flattenPlayerDirection(Vector direction) {
-        direction.setY(0);
-        if (direction.lengthSquared() > 0) {
-            direction.normalize();
-        } else {
-            direction = new Vector(0, 0, 1); 
-        }
-   }
-
-   private void emptyBlockWithAir(Player player, String[] args, int radius, int height) {
+    private void emptyBlockWithAir(Player player, String[] args, int radius, int height) {
         FillAreaBlockCommand command = new FillAreaBlockCommand();
+
+        // 1. Build solid structure centered at: PlayerPos + (CardinalDir * radius)
         command.execute(player, args);
 
+        // 2. Snap player facing direction to cardinal grid (matching movePlayerToCenterOfBlock)
         Location loc = player.getLocation();
         Vector direction = loc.getDirection();
-        flattenPlayerDirection(direction);
 
-        Location targetLoc = loc.add(direction.multiply(1));
+        int dx = 0;
+        int dz = 0;
+
+        if (Math.abs(direction.getX()) > Math.abs(direction.getZ())) {
+            dx = direction.getX() > 0 ? 1 : -1;
+        } else {
+            dz = direction.getZ() > 0 ? 1 : -1;
+        }
+
+        // 3. Teleport player EXACTLY 1 full block along the cardinal axis.
+        // (PlayerPos + 1) + (radius - 1) = PlayerPos + radius (Centers stay identical!)
+        Location targetLoc = loc.clone().add(dx, 0, dz);
         player.teleport(targetLoc);
 
+        // 4. Clear interior with AIR
         args[0] = String.valueOf(radius - 1);
         args[1] = String.valueOf(height - 1);
         args[2] = Material.AIR.toString();
         command.execute(player, args);
+
         player.sendMessage("Emptied block to make an empty building.");
-   }
+    }
 
    private Location movePlayerToCenterOfBlock(Player player, int radius) {
         Location loc = player.getLocation();
