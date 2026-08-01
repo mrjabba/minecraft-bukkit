@@ -25,6 +25,7 @@ Command | Usage | Description
 ### 🌿 Environment & Terraforming Commands
 Command | Usage | Description
 ---|---|---
+`/buildpath` | `/buildpath <width> <style>` | Paints a path beneath your feet as you walk, blending blocks like Dirt Path, Coarse Dirt, Gravel, and Slabs. Styles available: dirt, stone, rainbow, nether, yellowbrick.
 `/fillarea` | `/fillarea <radius> <blockType>` | Fills a flat square area around the player with a specified block type.
 `/fillareablock` | `/fillarea <radius> <height> <blockType>` | Fills a 3D block volume with height (use `air` for clearing large spaces).
 `/cleararea` | `/cleararea` | Clears all dirt blocks in a square area surrounding the player.

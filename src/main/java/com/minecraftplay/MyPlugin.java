@@ -21,6 +21,7 @@ import com.minecraftplay.command.PlaceItemCommand;
 import com.minecraftplay.command.ZzzCommand;
 import com.minecraftplay.command.MoveCommand;
 import com.minecraftplay.command.BuildMenuCommand;
+import com.minecraftplay.command.BuildPathCommand;
 import com.minecraftplay.command.FillAreaBlockCommand;
 import com.minecraftplay.command.ExplodeZoneCommand;
 import com.minecraftplay.command.BuildHouseCommand;
@@ -60,6 +61,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         commands.put("buildhouse", new BuildHouseCommand()::execute);
         commands.put("buildhouse2", new BuildHouse2Command()::execute);
         commands.put("buildmenu", new BuildMenuCommand()::execute);
+        commands.put("buildpath", new BuildPathCommand()::execute);
         commands.put("buildtower", new BuildTowerCommand()::execute);
         commands.put("buildtowersand", new BuildTowerSandCommand()::execute);
         commands.put("buildziggurat", new BuildZigguratCommand()::execute);
@@ -88,6 +90,7 @@ public class MyPlugin extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
         loadWarps();
         registerCommands();
+        getServer().getPluginManager().registerEvents(new PathMoveListener(), this);
     }
 
     @Override
