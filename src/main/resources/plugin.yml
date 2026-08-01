@@ -24,6 +24,9 @@ commands:
     usage: /buildhouse <length> <width>
   buildmenu:
     description: Opens the build menu
+  buildpath:
+    description: Paints a path beneath your feet as you walk.
+    usage: /buildpath <width> <style>
   buildtower:
     description: Builds a vertical tower
     usage: /buildtower <height> <blockType>
